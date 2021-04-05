@@ -1,0 +1,67 @@
+{% extends 'accounts/base.html' %}
+{% load static %)
+
+{% block content %}
+
+{% if reqs %}
+    <h3>Requests</h3>
+{% endif %}
+
+{% for req in reqs %}
+    <article class="media content-section">
+      <!-- <img class="rounded-circle article-img" src=""> -->
+      <div class="media-body">
+        <div class="article-metadata" style="">
+          <a class="mr-2" href="{% url 'profile' username=req.user.username %}">{{ req.user }}</a>
+          <small class="text-muted">{{ req.date }}</small>
+        </div>
+
+        <hr class="my-1 py-0">
+
+        <div class="">
+            <h4><a class="article-title" href="{% url 'request-details' req_id=req.id %}">{{ req.title }}</a></h4>
+            <h6 class="article-content">{{ req.description }}</h6>
+        </div>
+
+        <!-- <hr class="my-1 py-0"> -->
+
+        <small>
+            <a>{{ req.branch }}</a>
+            <!-- <a>sem:{{ req.semester }}</a> -->
+        </small>
+
+      </div>
+    </article>
+{% endfor %}
+
+{% if files %}
+    <h3>Files</h3>
+{% endif %}
+
+{% for file in files %}
+    <article class="media content-section">
+      <div class="media-body">
+        <div class="article-metadata">
+          <a class="mr-2" href="{% url 'profile' username=file.user.username %}">{{ file.user }}</a>
+          <small class="text-muted">{{ file.upload_date }}</small>
+        </div>
+
+        <hr class="my-1 py-0">
+
+        <div class="">
+            <h4><a class="article-title" href="">{{ file.filename }}</a></h4>
+            <h6 class="article-content">{{ file.description }}</h6>
+        </div>
+
+        <!-- <hr class="my-1 py-0"> -->
+
+        <small>
+            <a>{{ file.branch }}</a>
+            <!-- <a>sem:{{ req.semester }}</a> -->
+        </small>
+
+      </div>
+    </article>
+{% endfor %}
+
+{% endblock content %}
