@@ -1,67 +1,89 @@
 {% extends 'accounts/base.html' %}
-{% load static %)
+{% load static %}
+{% load devurlparser %}
 
 {% block content %}
 
 {% if reqs %}
-    <h3>Requests</h3>
+    <h3>Recent Requests</h3>
 {% endif %}
 
 {% for req in reqs %}
-    <article class="media content-section">
-      <!-- <img class="rounded-circle article-img" src=""> -->
-      <div class="media-body">
-        <div class="article-metadata" style="">
-          <a class="mr-2" href="{% url 'profile' username=req.user.username %}">{{ req.user }}</a>
-          <small class="text-muted">{{ req.date }}</small>
-        </div>
+    <article class="content-section my-3">
 
-        <hr class="my-1 py-0">
+      <div class="media">
+          <img class="mr-2 rounded-circle article-img" src="{% static 'accounts/default.jpg' %}" height="25px" width="25px">
+          <div class="article-metadata" style="">
+              <a class="mr-2" href="{% url 'profile' username=req.user.username %}">{{ req.user }}</a>
+              <small class="text-muted">{{ req.date }}</small>
+          </div>
+      </div>
+
+      <div class="media-body">
+        <hr class="my-2 py-0">
 
         <div class="">
             <h4><a class="article-title" href="{% url 'request-details' req_id=req.id %}">{{ req.title }}</a></h4>
             <h6 class="article-content">{{ req.description }}</h6>
         </div>
 
-        <!-- <hr class="my-1 py-0"> -->
-
         <small>
-            <a>{{ req.branch }}</a>
-            <!-- <a>sem:{{ req.semester }}</a> -->
+            {% if req.is_closed %}
+                <a class="anchor tag px-2" style="color: green; background: #a2f2cf;" href="#">Completed</a>
+            {% endif %}
+            <a class="anchor tag px-2" href="{% url 'all-requests' %}{% urlparams branch=req.branch %}">{{ req.branch }}</a>
+            <a class="anchor tag px-2" href="{% url 'all-requests' %}{% urlparams semester=req.semester %}">Semester: {{ req.semester }}</a>
         </small>
 
       </div>
+    </article>
+{% endfor %}
+
+{% if reqs %}
+    <div class="">
+        <a class="btn btn-sm btn-outline-info" style="float: right;" href="{% url 'all-requests'%}">See all requests</a>
+    </div>
+{% endif %}
+
+<br>
+
+{% if files %}
+    <hr>
+    <h3>Recent Uploads</h3>
+{% endif %}
+
+{% for file in files %}
+    <article class="content-section">
+        <div class="media">
+            <img class="mr-2 rounded-circle article-img" src="{% static 'accounts/default.jpg' %}" height="25px" width="25px">
+            <div class="article-metadata" style="">
+                <a class="mr-2" href="{% url 'profile' username=file.user.username %}">{{ file.user }}</a>
+                <small class="text-muted">{{ file.upload_date }}</small>
+            </div>
+        </div>
+
+        <div class="media-body">
+            <hr class="my-2 py-0">
+
+            <div class="">
+                <h4><a class="article-title" href="">{{ file.filename }}</a></h4>
+                <h6 class="article-content">{{ file.description }}</h6>
+            </div>
+
+            <small>
+                <a class="anchor tag px-2" href="{% url 'all-uploads' %}{% urlparams branch=file.branch %}">{{ file.branch }}</a>
+                <a class="anchor tag px-2" href="{% url 'all-uploads' %}{% urlparams semester=file.semester %}">Semester: {{ file.semester }}</a>
+            </small>
+        </div>
     </article>
 {% endfor %}
 
 {% if files %}
-    <h3>Files</h3>
+    <div class="">
+        <form>
+            <button class="btn btn-sm btn-outline-info" style="float:right" formaction="{% url 'all-uploads' %}">See all files</button>
+        </form>
+    </div>
 {% endif %}
-
-{% for file in files %}
-    <article class="media content-section">
-      <div class="media-body">
-        <div class="article-metadata">
-          <a class="mr-2" href="{% url 'profile' username=file.user.username %}">{{ file.user }}</a>
-          <small class="text-muted">{{ file.upload_date }}</small>
-        </div>
-
-        <hr class="my-1 py-0">
-
-        <div class="">
-            <h4><a class="article-title" href="">{{ file.filename }}</a></h4>
-            <h6 class="article-content">{{ file.description }}</h6>
-        </div>
-
-        <!-- <hr class="my-1 py-0"> -->
-
-        <small>
-            <a>{{ file.branch }}</a>
-            <!-- <a>sem:{{ req.semester }}</a> -->
-        </small>
-
-      </div>
-    </article>
-{% endfor %}
 
 {% endblock content %}

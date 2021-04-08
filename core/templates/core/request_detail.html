@@ -1,12 +1,65 @@
 {% extends 'accounts/base.html' %}
-{% load static %)
+{% load static %}
+{% load devurlparser %}
 
 {% block content %}
 
 <div class="content-section">
-    <h3>{{ req.title }}</h3>
-    <p>{{ req.description }}</p>
-    
+    <div class="row">
+        <h2 class="col">{{ req.title }}</h2>
+        {% if request.user.is_authenticated and req.user == request.user and req.responses.all and not req.is_closed %}
+            <a class="my-auto mx-2 btn btn-sm btn-outline-danger" style="float: right; vertical-align: center" href="{% url 'close-request' req_id=req.id %}">Mark as Completed</a>
+        {% endif %}
+        <a class="my-auto mx-2 btn btn-sm btn-outline-success" style="float: right; vertical-align: center" href="{% url 'new-upload' %}{% urlparams req=req.id semester=req.semester branch=req.branch next=request.path %}">Upload a response</a>
+    </div>
+
+    <div class="media mt-3">
+        <img class="mr-2 rounded-circle article-img" src="{% static 'accounts/default.jpg' %}" height="25px" width="25px">
+        <div class="article-metadata" style="">
+            <a class="mr-2" href="{% url 'profile' username=req.user.username %}">{{ req.user }}</a>
+            <small class="text-muted">{{ req.date }}</small>
+        </div>
+    </div>
+
+    <hr class="my-2 mb-4 py-0">
+
+    <div class="">
+        <p>{{ req.description }}</p>
+    </div>
+
+    <div id="tag-section" class="my-2">
+        <small>
+            {% if req.is_closed %}
+                <a class="anchor tag px-2" style="color: green; background: #a2f2cf;" href="#">Completed</a>
+            {% endif %}
+            <a class="anchor tag px-2" href="{% url 'all-requests' %}{% urlparams branch=req.branch %}">{{ req.branch }}</a>
+            <a class="anchor tag px-2" href="{% url 'all-requests' %}{% urlparams semester=req.semester %}">Semester: {{ req.semester }}</a>
+        </small>
+    </div>
+
+    {% if req.responses.all %}
+        <hr class="my-3 mb-2 py-0">
+        <h4 class="my-3">Responses</h4>
+        {% for i in req.responses.all %}
+
+            <div class="content-section">
+                <div class="media">
+                    <img class="mr-2 rounded-circle article-img" src="{% static 'accounts/default.jpg' %}" height="25px" width="25px">
+                    <div class="article-metadata" style="">
+                        <a class="mr-2" href="{% url 'profile' username=i.user.username %}">{{ i.user }}</a>
+                        <small class="text-muted">{{ i.upload_date }}</small>
+                    </div>
+                </div>
+
+                <hr class="my-2 py-0">
+
+                <a class="anchor" href="#">{{ i.filename }}</a>
+                <small>
+                    <p class="my-0">{{ i.description }}</p>
+                </small>
+            </div>
+        {% endfor %}
+    {% endif %}
 </div>
 
 {% endblock content %}

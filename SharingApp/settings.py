@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # Added
     'accounts.apps.AccountsConfig',
-    'API.apps.ApiConfig',
     'core.apps.CoreConfig',
     'crispy_forms',
 ]

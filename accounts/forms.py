@@ -10,6 +10,10 @@ class UserRegistrationForm(UserCreationForm):
     semester = forms.ChoiceField(label='Semester', widget=forms.Select, choices=choices.semesters)
     # rollno = forms.CharField(max_length=15)
 
+    def __init__(self, *args, **kwargs):
+        super(UserRegistrationForm, self).__init__(*args, **kwargs)
+        self.fields['first_name'].required = True
+
     class Meta:
         model = User
         fields = ('username', 'first_name', 'email', 'branch', 'semester', 'password1', 'password2')
