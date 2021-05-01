@@ -1,0 +1,20 @@
+{% extends 'accounts/profile_detail_base.html' %}
+{% load static %}
+{% load core_extras %}
+{% load crispy_forms_tags %}
+
+{% block form_content %}
+    <legend>Update Profile</legend>
+    <hr>
+    <form class="" action="update_profile" method="POST">
+        {% csrf_token %}
+
+        {% if next %}
+            <input type="text" name="next" value="{{ next }}" hidden>
+        {% endif %}
+
+        {{ form|crispy }}
+
+        <button class="btn btn-primary" type="submit" name="submit">Save</button>
+    </form>
+{% endblock form_content %}

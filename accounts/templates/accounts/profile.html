@@ -1,43 +1,96 @@
-{% extends 'accounts/base.html' %}
+{% extends 'account/base.html' %}
 {% load static %}
+{% load core_extras %}
 {% load crispy_forms_tags %}
 
 {% block content %}
-    <div class="content-section">
-        <div class="container-fluid m-0 p-0">
-            <div class="row">
-                <div class="col-md-auto mr-2">
-                    <img src="{% static 'accounts/default.jpg' %}" alt="Default image" height="120px" width="120px">
-                </div>
+    <div class="container-fluid m-0 p-0">
+        <div class="row">
+            <div class="col-md-5">
+                <div class="content-section p-4">
+                    <div class="row">
+                        <div class="col-md-auto mr-2">
+                            {% if usr.profile %}
+                                <img src="{{ usr.profile.avatar.url }}" style="border-radius: 10px;" alt="Default image" height="120px" width="120px">
+                            {% else %}
+                                <img src="{% url 'media-server' filename='default-avatar.jpg' %}" style="border-radius: 10px;" alt="Default image" height="120px" width="120px">
+                            {% endif %}
+                        </div>
 
-                <div class="">
-                    <h4 class="account-heading">{{ usr.first_name }}</h4>
-                    <h6 class="account-heading">{{ usr.username }}</h6>
-                    <h6 class="text-secondary">{{ usr.email }}</h6>
+                        <div class="">
+                            <h4 class="account-heading">{{ usr.first_name }}</h4>
+                            <h6 class="account-heading">{{ usr.username }}</h6>
+                            <h6 class="text-secondary">{{ usr.email }}</h6>
+
+                            {% if request.user == usr %}
+                                <a href="{% url 'update-profile' %}" class="btn btn-sm btn-outline-secondary">Edit Profile</a>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="media">
+                        <div class="media-body">
+                            <hr>
+                            {% if usr.profile.about %}
+                                <h6 class=""><span class="text-dark"></span> {{ usr.profile.about }}</h6>
+                                <hr>
+                            {% endif %}
+
+                            {% if usr.profile.website %}
+                                <h6 class="text-secondary"><span class="text-dark">Website:</span><a class="anchor" href="{{ usr.profile.website }}"> {{ usr.profile.website }}</a></h6>
+                            {% endif %}
+
+                            {% if usr.profile.college %}
+                                <h6 class="text-secondary"><span class="text-dark">College/Institution:</span> {{ usr.profile.college }}</h6>
+                            {% endif %}
+
+                            {% if usr.profile.branch %}
+                                <h6 class="text-secondary"><span class="text-dark">Branch:</span> {{ usr.profile.branch }}</h6>
+                            {% endif %}
+
+                            {% if usr.profile.semester %}
+                                <h6 class="text-secondary"><span class="text-dark">Semester:</span> {{ usr.profile.semester }}</h6>
+                            {% endif %}
+
+                            {% if usr.date_joined %}
+                                <h6 class="text-secondary"><span class="text-dark">Date Joined:</span> {{ usr.date_joined|date:"M d, Y" }}</h6>
+                            {% endif %}
+                            <!-- <h6 class="text-secondary"><span class="text-dark">Last active:</span> {{ usr.last_login }}</h6> -->
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="media">
-                <div class="media-body">
+            <div class="col-md-7">
+                <div class="content-section mx-0 p-4">
+                    <h4 class="mb-3">Requests</h4>
                     <hr>
-                    <h6 class="text-secondary"><span class="text-dark">Branch:</span> {{ usr.profile.branch }}</h6>
-                    <h6 class="text-secondary"><span class="text-dark">Semester:</span> {{ usr.profile.semester }}</h6>
-
-
                     {% if reqs %}
                     <div class="">
-                        <hr>
-                        <h5>Requests</h5>
-                        <ul>
-                            {% for r in reqs %}
-                            {% if r.is_closed %}
-                            <li class="text-secondary"><a href="{% url 'request-details' req_id=r.id %}">{{ r.title }}</a></li>
-                            {% else %}
-                            <li class="text-secondary"><a href="{% url 'request-details' req_id=r.id %}">{{ r.title }}</a></li>
-                            {% endif %}
-                            {% endfor %}
-                        </ul>
+                        {% for r in reqs %}
+                        <div class="card my-2">
+                            <div class="card-body px-3 py-2">
+                                <a class="anchor" href="{% url 'request-details' req_id=r.id %}">
+                                    <h5 class="card-title my-1">{{ r.title }}</h5>
+                                </a>
+
+                                <div id="tag-section" class="my-0">
+                                    <small>
+                                        {% if r.is_closed %}
+                                            <a class="anchor tag px-2" style="color: green; background: #a2f2cf;">Completed</a>
+                                        {% endif %}
+                                        <a class="anchor tag px-2" href="{% url 'all-requests' %}{% urlparams branch=r.branch %}">{{ r.branch }}</a>
+                                        <a class="anchor tag px-2" href="{% url 'all-requests' %}{% urlparams semester=r.semester %}">Semester: {{ r.semester }}</a>
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
                     </div>
+                    {% else %}
+                        <div class="text-center text-secondary">
+                            <i>No requests</i>
+                        </div>
                     {% endif %}
                 </div>
             </div>

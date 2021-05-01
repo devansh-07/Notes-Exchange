@@ -6,6 +6,7 @@ from django.contrib import messages
 from .models import Profile
 
 def show_message(sender, user, request, **kwargs):
-    messages.info(request, 'You have been logged out.')
+    # messages.info(request, 'You have been logged out.')
+    pass
 
 user_logged_out.connect(show_message)

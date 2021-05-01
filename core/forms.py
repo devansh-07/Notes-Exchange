@@ -5,8 +5,8 @@ from django.db.models.fields import BLANK_CHOICE_DASH
 from django.core.validators import FileExtensionValidator
 
 class RequestForm(forms.Form):
-    title = forms.CharField(label='Title', max_length=100)
-    description = forms.CharField(label='Description', max_length=500)
+    title = forms.CharField(label='Title', max_length=150)
+    description = forms.CharField(label='Description', max_length=400)
     # college = forms.ChoiceField(label='College', widget=forms.Select, choices=choices.colleges)
     branch = forms.ChoiceField(label='Branch', widget=forms.Select, choices=BLANK_CHOICE_DASH + choices.branches)
     semester = forms.ChoiceField(label='Semester', widget=forms.Select, choices=BLANK_CHOICE_DASH + choices.semesters)
@@ -15,6 +15,8 @@ class RequestForm(forms.Form):
         data = self.cleaned_data
         new_req = Request.objects.create(title=data['title'], description=data['description'], branch=data['branch'], semester=data['semester'], user_id=user.id)
         new_req.save()
+
+        return new_req
 
 class UploadForm(forms.Form):
 
@@ -27,13 +29,13 @@ class UploadForm(forms.Form):
             request_choices = [(req.id, req.title) for req in Request.objects.all()]
         except:
             request_choices = []
-        self.fields['req'] = forms.ChoiceField(label='Request (Optional)', widget=forms.Select, choices=BLANK_CHOICE_DASH + request_choices, required=False)
+        self.fields['req'] = forms.ChoiceField(label='Request', widget=forms.Select, choices=BLANK_CHOICE_DASH + request_choices, required=True)
 
     doc = forms.FileField(validators=[FileExtensionValidator(['pdf'])], label='Upload File (PDF format only)')
-    description = forms.CharField(label='Description', max_length=500)
+    description = forms.CharField(label='Description', max_length=400)
     branch = forms.ChoiceField(label='Branch', widget=forms.Select, choices=BLANK_CHOICE_DASH + choices.branches)
     semester = forms.ChoiceField(label='Semester', widget=forms.Select, choices=BLANK_CHOICE_DASH + choices.semesters)
-    req = forms.ChoiceField(label='Request (Optional)', widget=forms.Select, choices=BLANK_CHOICE_DASH, required=False)
+    req = forms.ChoiceField(label='Request', widget=forms.Select, choices=BLANK_CHOICE_DASH, required=True)
 
     def save(self, request, user):
         data = self.cleaned_data

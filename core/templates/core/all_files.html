@@ -1,13 +1,12 @@
-{% extends 'accounts/base.html' %}
+{% extends 'account/base.html' %}
 {% load static %}
-{% load devurlparser %}
+{% load core_extras %}
 {% load crispy_forms_tags %}
 
 {% block content %}
 
-{% if files %}
-    <h3>All Files</h3>
-    <hr class="my-3 py-0">
+<div class="content-section">
+    <legend class="border-bottom mb-3">All Files</legend>
     <!-- Search form -->
     <form class="" action="" method="GET">
         <div class="form-row">
@@ -21,16 +20,25 @@
         </div>
         <button class="btn btn-primary" type="submit">Search</button>
     </form>
-    <hr class="my-3 py-0">
+</div>
+
+{% if not files %}
+    <div class="content-section text-center text-secondary">
+        <i>Your search didn't match any Files.</i>
+    </div>
 {% endif %}
 
 {% for file in files %}
     <article class="content-section my-3">
 
         <div class="media">
-            <img class="mr-2 rounded-circle article-img" src="{% static 'accounts/default.jpg' %}" height="25px" width="25px">
+            {% if file.user.profile %}
+                    <img class="mr-2 rounded-circle article-img" src="{{ file.user.profile.avatar.url }}" height="25px" width="25px">
+            {% else %}
+                    <img class="mr-2 rounded-circle article-img" src="{% url 'media-server' filename='default-avatar.jpg' %}" height="25px" width="25px">
+            {% endif %}
             <div class="article-metadata" style="">
-                <a class="mr-2" href="{% url 'profile' username=file.user.username %}">{{ file.user }}</a>
+                <a class="anchor mr-2" href="{% url 'profile' username=file.user.username %}">{{ file.user }}</a>
                 <small class="text-muted">{{ file.upload_date }}</small>
             </div>
         </div>
@@ -39,7 +47,7 @@
             <hr class="my-2 py-0">
 
             <div class="">
-                <h4><a class="article-title" href="">{{ file.filename }}</a></h4>
+                <h4><a class="article-title" href="{% url 'download' %}{% urlparams fileid=file.id %}">{{ file.filename }}</a></h4>
                 <h6 class="article-content">{{ file.description }}</h6>
             </div>
 

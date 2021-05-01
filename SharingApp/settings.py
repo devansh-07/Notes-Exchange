@@ -12,10 +12,10 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 import os
 from pathlib import Path
+from .local import *
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
@@ -37,10 +37,17 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+
     # Added
     'accounts.apps.AccountsConfig',
     'core.apps.CoreConfig',
     'crispy_forms',
+
+    # Auth
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
 ]
 
 MIDDLEWARE = [
@@ -59,7 +66,7 @@ ROOT_URLCONF = 'SharingApp.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'accounts/templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'templates'), os.path.join(BASE_DIR, 'templates', 'allauth')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -72,8 +79,16 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'SharingApp.wsgi.application'
+AUTHENTICATION_BACKENDS = [
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
 
+    # `allauth` specific authentication methods, such as login by e-mail
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+
+WSGI_APPLICATION = 'SharingApp.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
@@ -85,6 +100,7 @@ DATABASES = {
     }
 }
 
+SITE_ID = 1
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -104,20 +120,18 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Kolkata'
 
 USE_I18N = True
 
 USE_L10N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
@@ -127,17 +141,27 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 STATIC_URL = '/static/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "Media")
-MEDIA_URL = "/files/"
+MEDIA_URL = "/media/"
 
 # EDITS by Dev
-LOGIN_URL = 'login'
+LOGIN_URL = 'account_login'
 
-LOGOUT_URL = 'logout'
+LOGOUT_URL = 'account_logout'
 
 LOGIN_REDIRECT_URL = 'home'
 
-LOGOUT_REDIRECT_URL = 'home'
+ACCOUNT_LOGOUT_ON_GET = True
+
+ACCOUNT_EMAIL_REQUIRED = True
+
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+
+ACCOUNT_EMAIL_SUBJECT_PREFIX = "[WhoShares] "
 
 # APPEND_SLASH = False
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+ACCOUNT_FORMS = {'signup': 'accounts.forms.CustomSignupForm'}
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"

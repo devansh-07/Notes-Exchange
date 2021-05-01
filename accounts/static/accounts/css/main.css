@@ -31,3 +31,11 @@ a.article-title:hover {
 .anchor:link {
     text-decoration: none;
 }
+
+.card-body:hover {
+    background: WhiteSmoke;
+}
+
+.profile_pic{
+    /* border: 3px solid gray; */
+}

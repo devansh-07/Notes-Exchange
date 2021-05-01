@@ -1,6 +1,6 @@
-{% extends 'accounts/base.html' %}
+{% extends 'account/base.html' %}
 {% load static %}
-{% load devurlparser %}
+{% load core_extras %}
 
 {% block content %}
 
@@ -8,15 +8,19 @@
     <div class="row">
         <h2 class="col">{{ req.title }}</h2>
         {% if request.user.is_authenticated and req.user == request.user and req.responses.all and not req.is_closed %}
-            <a class="my-auto mx-2 btn btn-sm btn-outline-danger" style="float: right; vertical-align: center" href="{% url 'close-request' req_id=req.id %}">Mark as Completed</a>
+            <a class="my-auto mx-2 btn btn-sm btn-primary" style="float: right; vertical-align: center" href="{% url 'close-request' req_id=req.id %}">Mark as Completed</a>
         {% endif %}
         <a class="my-auto mx-2 btn btn-sm btn-outline-success" style="float: right; vertical-align: center" href="{% url 'new-upload' %}{% urlparams req=req.id semester=req.semester branch=req.branch next=request.path %}">Upload a response</a>
     </div>
 
     <div class="media mt-3">
-        <img class="mr-2 rounded-circle article-img" src="{% static 'accounts/default.jpg' %}" height="25px" width="25px">
+        {% if req.user.profile %}
+            <img class="mr-2 rounded-circle article-img" src="{{ req.user.profile.avatar.url }}" height="25px" width="25px">
+        {% else %}
+            <img class="mr-2 rounded-circle article-img" src="{% url 'media-server' filename='default-avatar.jpg' %}" height="25px" width="25px">
+        {% endif %}
         <div class="article-metadata" style="">
-            <a class="mr-2" href="{% url 'profile' username=req.user.username %}">{{ req.user }}</a>
+            <a class="anchor mr-2" href="{% url 'profile' username=req.user.username %}">{{ req.user }}</a>
             <small class="text-muted">{{ req.date }}</small>
         </div>
     </div>
@@ -44,16 +48,20 @@
 
             <div class="content-section">
                 <div class="media">
-                    <img class="mr-2 rounded-circle article-img" src="{% static 'accounts/default.jpg' %}" height="25px" width="25px">
+                    {% if i.user.profile %}
+                            <img class="mr-2 rounded-circle article-img" src="{{ i.user.profile.avatar.url }}" height="25px" width="25px">
+                    {% else %}
+                            <img class="mr-2 rounded-circle article-img" src="{% url 'media-server' filename='default-avatar.jpg' %}" height="25px" width="25px">
+                    {% endif %}
                     <div class="article-metadata" style="">
-                        <a class="mr-2" href="{% url 'profile' username=i.user.username %}">{{ i.user }}</a>
+                        <a class=" anchor mr-2" href="{% url 'profile' username=i.user.username %}">{{ i.user }}</a>
                         <small class="text-muted">{{ i.upload_date }}</small>
                     </div>
                 </div>
 
                 <hr class="my-2 py-0">
 
-                <a class="anchor" href="#">{{ i.filename }}</a>
+                <a class="anchor" href="{% url 'download' %}{% urlparams fileid=i.id%}">{{ i.filename }}</a>
                 <small>
                     <p class="my-0">{{ i.description }}</p>
                 </small>
@@ -63,3 +71,64 @@
 </div>
 
 {% endblock content %}
+
+{% block sidecontent %}
+<div class="col-md-4">
+    <div class="content-section">
+        <div class="media">
+            {% if req.user.profile %}
+                    <img class="mr-2 rounded-circle article-img" src="{{ req.user.profile.avatar.url }}" height="60px" width="60px">
+            {% else %}
+                    <img class="mr-2 rounded-circle article-img" src="{% url 'media-server' filename='default-avatar.jpg' %}" height="60px" width="60px">
+            {% endif %}
+            <div class="article-metadata py-2" style="">
+                <h5 class="m-0 p-0">{{ req.user.first_name }}</h5>
+                <a class="anchor m-0 p-0 text-secondary" href="{% url 'profile' username=req.user.username %}">@{{ req.user }}</a>
+            </div>
+        </div>
+
+        <hr class="w-50">
+
+        <div class="">
+            {% if request.user.is_authenticated %}
+                <h6 class="text-secondary"><span class="text-dark">Email:</span> {{ req.user.email }}</h6>
+            {% endif %}
+
+            {% if req.user.profile.branch %}
+                <h6 class="text-secondary"><span class="text-dark">Branch:</span> {{ req.user.profile.branch }}</h6>
+            {% endif %}
+
+            {% if req.user.profile.semester %}
+                <h6 class="text-secondary"><span class="text-dark">Semester:</span> {{ req.user.profile.semester }}</h6>
+            {% endif %}
+
+            {% if req.user.request_set|exclude:req %}
+                <div class="">
+                    <hr>
+                    <h5>More requests from <a  style="text-decoration: none;" href="{% url 'profile' username=req.user.username %}">{{ req.user.username }}</a></h5>
+
+                    {% for r in req.user.request_set|exclude:req|order:"-date"|slice:"0:3" %}
+                        <div class="card my-2">
+                            <div class="card-body px-3 py-2">
+                                <a class="anchor" href="{% url 'request-details' req_id=r.id %}">
+                                    <h5 class="card-title my-1">{{ r.title }}</h5>
+                                </a>
+
+                                <div id="tag-section" class="my-0">
+                                    <small>
+                                        {% if r.is_closed %}
+                                            <a class="anchor tag px-2" style="color: green; background: #a2f2cf;">Completed</a>
+                                        {% endif %}
+                                        <a class="anchor tag px-2" href="{% url 'all-requests' %}{% urlparams branch=r.branch %}">{{ r.branch }}</a>
+                                        <a class="anchor tag px-2" href="{% url 'all-requests' %}{% urlparams semester=r.semester %}">Semester: {{ r.semester }}</a>
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock sidecontent %}

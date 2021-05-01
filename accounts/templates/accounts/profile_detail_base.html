@@ -1,0 +1,85 @@
+{% extends 'account/base.html' %}
+{% load static %}
+{% load core_extras %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <div class="container-fluid m-0 p-0">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="content-section px-1 py-3">
+                    <div class="" style="text-align:center;">
+                        {% if request.user.profile %}
+                                <input type="image" class="profile_pic" data-toggle="modal" data-target="#exampleModalCenter" src="{{ request.user.profile.avatar.url }}" style="border-radius: 10px;" alt="Profile Picture" height="180px" width="180px">
+                        {% else %}
+                                <input type="image" class="profile_pic" data-toggle="modal" data-target="#exampleModalCenter" src="{% url 'media-server' filename='default-avatar.jpg' %}" style="border-radius: 10px;" alt="Profile Picture" height="180px" width="180px">
+                        {% endif %}
+                    </div>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLongTitle">Update Profile Picture</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <form class="" action="update_profile_pic" method="post" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <div class="modal-body">
+                                        <div class="upload-btn-wrapper">
+                                            <button class="btn">Upload a file</button>
+                                            <input type="file" name="avatar" required/>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-sm btn-primary">Update</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Modal -->
+
+                    <hr class="w-50">
+
+                    <div class="px-3">
+                        <h4 class="account-heading">{{ request.user.first_name }}</h4>
+                        <h6 class="text-secondary account-heading">@{{ request.user.username }}</h6>
+                        <h6 class="text-secondary"><span class="text-dark">Email:</span> {{ request.user.email }}</h6>
+                        <hr>
+                        <div class="card" style="border: 1px solid lightgray; border-radius:0;">
+                            <a class="card-body p-0 anchor" style="border-bottom: 1px solid lightgray;" href="{% url 'update-profile' %}">
+                                <div class="my-3 text-center">
+                                    <h6>Edit Profile</h6>
+                                </div>
+                            </a>
+                            <a class="card-body p-0 anchor" style="border-bottom: 1px solid lightgray;" href="{% url 'account_email' %}">
+                                <div class="my-3 text-center">
+                                    <h6>Edit Emails</h6>
+                                </div>
+                            </a>
+
+                            <a class="card-body p-0 anchor" href="{% url 'account_change_password' %}">
+                                <div class="my-3 text-center">
+                                    <h6>Change Password</h6>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-8">
+                <div class="content-section">
+                    {% block form_content %}
+
+                    {% endblock form_content %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
