@@ -7,8 +7,8 @@ from . import choices
 # Create your models here.
 
 class Request(models.Model):
-    title = models.CharField(max_length=100)
-    description = models.CharField(max_length=100)
+    title = models.CharField(max_length=150)
+    description = models.CharField(max_length=400)
     # college = models.CharField(max_length=100)
     branch = models.CharField(max_length=50, choices=choices.branches)
     semester = models.IntegerField(choices=choices.semesters)
@@ -23,7 +23,7 @@ class Request(models.Model):
 class File(models.Model):
     doc = models.FileField(upload_to='Files/', default="0")
     # college = models.CharField(max_length=100)
-    description = models.CharField(max_length=100)
+    description = models.CharField(max_length=400)
     branch = models.CharField(max_length=50, choices=choices.branches)
     semester = models.IntegerField(choices=choices.semesters)
     upload_date = models.DateTimeField(default=timezone.now)
