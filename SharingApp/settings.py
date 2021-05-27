@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 import os
 from pathlib import Path
 from .local import *
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY', "no_more_secrets")
+SECRET_KEY = os.environ.get('SECRET_KEY', "noSecretKey")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -93,12 +94,9 @@ WSGI_APPLICATION = 'SharingApp.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+# EDIT
+# FOR HEROKU DEPLOYMENT ONLY
+DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
 
 SITE_ID = 1
 
@@ -144,6 +142,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "Media")
 MEDIA_URL = "/media/"
 
 # EDITS by Dev
+
 LOGIN_URL = 'account_login'
 
 LOGOUT_URL = 'account_logout'

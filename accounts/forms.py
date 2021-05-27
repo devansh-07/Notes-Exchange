@@ -4,6 +4,7 @@ from allauth.account.forms import SignupForm
 from core import choices
 from .models import Profile
 from django.db.models.fields import BLANK_CHOICE_DASH
+from django.core.validators import validate_image_file_extension
 
 class CustomSignupForm(SignupForm):
     def __init__(self, *args, **kwargs):
