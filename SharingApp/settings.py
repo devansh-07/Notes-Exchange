@@ -96,6 +96,7 @@ WSGI_APPLICATION = 'SharingApp.wsgi.application'
 
 # EDIT
 # FOR HEROKU DEPLOYMENT ONLY
+DATABASES = {}
 DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
 
 SITE_ID = 1
