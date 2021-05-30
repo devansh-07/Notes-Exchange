@@ -7,9 +7,9 @@ from django.core.validators import FileExtensionValidator
 class RequestForm(forms.Form):
     title = forms.CharField(label='Title', max_length=150)
     description = forms.CharField(label='Description', max_length=400)
-    # college = forms.ChoiceField(label='College', widget=forms.Select, choices=choices.colleges)
     branch = forms.ChoiceField(label='Branch', widget=forms.Select, choices=BLANK_CHOICE_DASH + choices.branches)
     semester = forms.ChoiceField(label='Semester', widget=forms.Select, choices=BLANK_CHOICE_DASH + choices.semesters)
+    # college = forms.ChoiceField(label='College', widget=forms.Select, choices=choices.colleges)
 
     def save(self, request, user):
         data = self.cleaned_data
