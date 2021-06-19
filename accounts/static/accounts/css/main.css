@@ -39,3 +39,11 @@ a.article-title:hover {
 .profile_pic{
     /* border: 3px solid gray; */
 }
+
+.btn-normal {
+    background-color: #e8ebed!important;
+}
+
+.btn-normal:hover {
+    background-color: #d1dfe8!important;
+}

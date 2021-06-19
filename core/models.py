@@ -17,6 +17,9 @@ class Request(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
+    upvotes = models.ManyToManyField(User, blank=True, related_name="req_upvotes")
+    downvotes = models.ManyToManyField(User, blank=True, related_name="req_downvotes")
+
     def __str__(self):
         return self.title
 
@@ -31,6 +34,9 @@ class File(models.Model):
     # Foreign Keys
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     request = models.ForeignKey(Request, on_delete=models.CASCADE, related_name='responses', null=True)
+
+    upvotes = models.ManyToManyField(User, blank=True, related_name="file_upvotes")
+    downvotes = models.ManyToManyField(User, blank=True, related_name="file_downvotes")
 
     @property
     def filename(self):

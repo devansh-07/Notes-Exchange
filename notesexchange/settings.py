@@ -94,9 +94,15 @@ WSGI_APPLICATION = 'notesexchange.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
+
 # EDIT
 # FOR HEROKU DEPLOYMENT ONLY
-DATABASES = {}
 DATABASES['default'] = dj_database_url.config(env="HEROKU_POSTGRESQL_AQUA_URL", conn_max_age=600, ssl_require=True)
 
 SITE_ID = 1

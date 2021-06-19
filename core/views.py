@@ -34,7 +34,7 @@ def profile_pic_server(request, filename):
 def home(request):
     reqs = Request.objects.filter().order_by('-date')
     all_files = File.objects.all().order_by('-upload_date')
-    return render(request, "core/home.html", {"reqs": reqs, "files": all_files, "title": "Home"})
+    return render(request, "core/home.html", {"user": request.user, "reqs": reqs, "files": all_files, "title": "Home"})
 
 def all_requests(request):
     reqs = Request.objects.all()
@@ -102,3 +102,53 @@ def request_details(request, req_id):
         messages.warning(request, f"Invalid request ID!")
         return redirect('home')
     return render(request, "core/request_detail.html", {"req": req, "title": req.title})
+
+@csrf_exempt
+@login_required
+@verified_email_required
+@profile_required(redirect_url="update-profile")
+def cast_vote(request):
+    flag = request.POST.get("flag")
+    vote = request.POST.get("vote")
+    id = request.POST.get("object_id")
+    user = request.user
+
+    if flag == None or vote == None or id == None or flag not in ['0', '1'] or vote not in ['1', '-1']:
+        # Invalid Input Code / Bad request
+        return HttpResponse(status=400)
+
+    try:
+        id = int(id)
+
+        if flag == '0':
+            # Casting Vote for request
+            object = Request.objects.get(id=id)
+        else:
+            # Casting Vote for Upload
+            object = File.objects.get(id=id)
+
+        if vote == '1':
+            # Upvote
+
+            if user in object.upvotes.all():
+                object.upvotes.remove(user)
+            else:
+                object.upvotes.add(user)
+                object.downvotes.remove(user)
+
+            return HttpResponse(status=201)
+        else:
+            # Downvote
+
+            if user in object.downvotes.all():
+                object.downvotes.remove(user)
+            else:
+                object.downvotes.add(user)
+                object.upvotes.remove(user)
+
+            return HttpResponse(status=201)
+    except:
+        # Invalid Input Code / Bad Request
+        return HttpResponse(status=400)
+
+    return HttpResponse(status=400)

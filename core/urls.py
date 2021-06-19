@@ -12,5 +12,6 @@ urlpatterns = [
     path('request/<int:req_id>', views.request_details, name='request-details'),
     path('request/<int:req_id>/close', views.close_request, name='close-request'),
     path('download/', views.download, name='download'),
-    path('media/profile_pics/<str:filename>', views.profile_pic_server, name='media-server')
+    path('media/profile_pics/<str:filename>', views.profile_pic_server, name='media-server'),
+    path('cast-vote/', views.cast_vote, name='cast-vote'),
 ]

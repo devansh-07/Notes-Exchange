@@ -27,18 +27,70 @@
 
     <hr class="my-2 mb-4 py-0">
 
-    <div class="">
-        <p>{{ req.description }}</p>
-    </div>
+    <div class="row">
+        <div class="col">
+            <div class="">
+                <p>{{ req.description }}</p>
+            </div>
 
-    <div id="tag-section" class="my-2">
-        <small>
-            {% if req.is_closed %}
-                <a class="anchor tag px-2" style="color: green; background: #a2f2cf;" href="#">Completed</a>
-            {% endif %}
-            <a class="anchor tag px-2" href="{% url 'all-requests' %}{% urlparams branch=req.branch %}">{{ req.branch }}</a>
-            <a class="anchor tag px-2" href="{% url 'all-requests' %}{% urlparams semester=req.semester %}">Semester: {{ req.semester }}</a>
-        </small>
+            <div id="tag-section" class="my-2">
+                <small>
+                    {% if req.is_closed %}
+                    <a class="anchor tag px-2" style="color: green; background: #a2f2cf;" href="#">Completed</a>
+                    {% endif %}
+                    <a class="anchor tag px-2" href="{% url 'all-requests' %}{% urlparams branch=req.branch %}">{{ req.branch }}</a>
+                    <a class="anchor tag px-2" href="{% url 'all-requests' %}{% urlparams semester=req.semester %}">Semester: {{ req.semester }}</a>
+                </small>
+            </div>
+        </div>
+
+
+        {% if user.is_authenticated %}
+            <div class="col-auto border-left py-1">
+                <div class="" style="min-width: 50px;">
+                    {% if user in req.upvotes.all %}
+                        <button id="reqUp" class="w-100 mb-1 btn btn-sm btn-success" onclick="CastVoteUtil(0, 1, {{ req.id }})" type="button" name="button">
+                            <i class="fa fa-caret-up" aria-hidden="true"></i>
+                            {{ req.upvotes.all|length }}
+                        </button>
+                    {% else %}
+                        <button id="reqUp" class="w-100 mb-1 btn btn-sm btn-normal" onclick="CastVoteUtil(0, 1, {{ req.id }})" type="button" name="button">
+                            <i class="fa fa-caret-up" aria-hidden="true"></i>
+                            {{ req.upvotes.all|length }}
+                        </button>
+                    {% endif %}
+                </div>
+                <div class="" style="min-width: 50px;">
+                    {% if user in req.downvotes.all %}
+                        <button id="reqDown" class="w-100 btn btn-sm btn-danger" type="button" onclick="CastVoteUtil(0, -1, {{ req.id }})" name="button">
+                            <i class="fa fa-caret-down" aria-hidden="true"></i>
+                            {{ req.downvotes.all|length }}
+                        </button>
+                    {% else %}
+                        <button id="reqDown" class="w-100 btn btn-sm btn-normal" type="button" onclick="CastVoteUtil(0, -1, {{ req.id }})" name="button">
+                            <i class="fa fa-caret-down" aria-hidden="true"></i>
+                            {{ req.downvotes.all|length }}
+                        </button>
+                    {% endif %}
+                </div>
+            </div>
+        {% else %}
+            <div class="col-auto border-left">
+                <div class="p-0" style="min-width: 50px;">
+                    <label class="w-100 btn btn-sm border mb-1" type="" name="">
+                        <i class="fa fa-caret-up" aria-hidden="true"></i>
+                        {{ req.upvotes.all|length }}
+                    </label>
+                </div>
+                <div class="p-0" style="min-width: 50px;">
+                    <label class="w-100 btn btn-sm border my-0" type="" name="">
+                        <i class="fa fa-caret-down" aria-hidden="true"></i>
+                        {{ req.downvotes.all|length }}
+                    </label>
+                </div>
+            </div>
+        {% endif %}
+
     </div>
 
     {% if req.responses.all %}
@@ -58,13 +110,67 @@
                         <small class="text-muted">{{ i.upload_date }}</small>
                     </div>
                 </div>
-
                 <hr class="my-2 py-0">
 
-                <a class="anchor" href="{% url 'download' %}{% urlparams fileid=i.id%}">{{ i.filename }}</a>
-                <small>
-                    <p class="my-0">{{ i.description }}</p>
-                </small>
+                <div class="row">
+                    <div class="col">
+
+                        <a class="anchor" href="{% url 'download' %}{% urlparams fileid=i.id%}">{{ i.filename }}</a>
+                        <small>
+                            <p class="my-0">{{ i.description }}</p>
+                        </small>
+                    </div>
+
+                    {% if user.is_authenticated %}
+                        <div class="col-auto border-left">
+                            <div class="row pl-1">
+                                <div class="col p-1" style="min-width: 50px;">
+                                    {% if user in i.upvotes.all %}
+                                        <button id="reqUp" class="w-100 mb-1 btn btn-sm btn-success" onclick="CastVoteUtil(1, 1, {{ i.id }})" type="button" name="button">
+                                            <i class="fa fa-caret-up" aria-hidden="true"></i>
+                                            {{ i.upvotes.all|length }}
+                                        </button>
+                                    {% else %}
+                                        <button id="reqUp" class="w-100 mb-1 btn btn-sm btn-normal" onclick="CastVoteUtil(1, 1, {{ i.id }})" type="button" name="button">
+                                            <i class="fa fa-caret-up" aria-hidden="true"></i>
+                                            {{ i.upvotes.all|length }}
+                                        </button>
+                                    {% endif %}
+                                </div>
+                                <div class="col p-1" style="min-width: 50px;">
+                                    {% if user in i.downvotes.all %}
+                                        <button id="reqDown" class="w-100 btn btn-sm btn-danger" type="button" onclick="CastVoteUtil(1, -1, {{ i.id }})" name="button">
+                                            <i class="fa fa-caret-down" aria-hidden="true"></i>
+                                            {{ i.downvotes.all|length }}
+                                        </button>
+                                    {% else %}
+                                        <button id="reqDown" class="w-100 btn btn-sm btn-normal" type="button" onclick="CastVoteUtil(1, -1, {{ i.id }})" name="button">
+                                            <i class="fa fa-caret-down" aria-hidden="true"></i>
+                                            {{ i.downvotes.all|length }}
+                                        </button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="col-auto border-left">
+                            <div class="row pl-1">
+                                <div class="col p-1" style="min-width: 50px;">
+                                    <label class="w-100 btn btn-sm border mb-1" type="" name="">
+                                        <i class="fa fa-caret-up" aria-hidden="true"></i>
+                                        {{ i.upvotes.all|length }}
+                                    </label>
+                                </div>
+                                <div class="col p-1" style="min-width: 50px;">
+                                    <label class="w-100 btn btn-sm border my-0" type="" name="">
+                                        <i class="fa fa-caret-down" aria-hidden="true"></i>
+                                        {{ i.downvotes.all|length }}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
             </div>
         {% endfor %}
     {% endif %}
