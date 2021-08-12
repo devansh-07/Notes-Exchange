@@ -1,0 +1,43 @@
+{% load crispy_forms_tags %}
+{% load core_extras %}
+
+{% if form %}
+    <form class="" action="{{ action_url }}" method="POST">
+        {% csrf_token %}
+        <input name="form_action_type" value="{{ form_action_type }}" hidden>
+
+        {% if form.errors|get_value_from_dict:"__all__" %}
+            <div style="border-radius: 5px;" class="alert alert-danger py-2">
+                {% with form.errors|get_value_from_dict:"__all__" as form_error %}
+                    <small>{{ form_error.as_text|strip:"*" }}</small>
+                {% endwith %}
+            </div>
+        {% endif %}
+
+        {% for field in form %}
+            {% if field.errors %}
+                <div class="mb-4">
+                    <div class="form-outline mb-0">
+                        <input name="{{ field.name }}" type="{{ field.field.widget.input_type }}" {% if field.value %} value="{{ field.value }}" {% endif %} class="form-control is-invalid" maxlength="{{ field.field.max_length }}" required/>
+                        <label class="form-label" for="form1Example1">{{ field.label }}</label>
+                    </div>
+
+                    <div class="">
+                        <small><small>{{ field.errors }}</small></small>
+                    </div>
+                </div>
+            {% else %}
+                <div class="mb-4">
+                    <div class="form-outline">
+                        <input name="{{ field.name }}" type="{{ field.field.widget.input_type }}" {% if field.value %} value="{{ field.value }}" {% endif %} class="form-control" maxlength="{{ field.field.max_length }}" required/>
+                        <label class="form-label" for="form1Example1">{{ field.label }}</label>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+
+        <button type="submit" class="btn btn-primary btn-block">
+            {{ submit_name }}
+        </button>
+    </form>
+{% endif %}

@@ -20,10 +20,10 @@
                         <div class="">
                             <h4 class="account-heading">{{ usr.first_name }}</h4>
                             <h6 class="account-heading">{{ usr.username }}</h6>
-                            <h6 class="text-secondary">{{ usr.email }}</h6>
+                            <h6 class="text-gray">{{ usr.email }}</h6>
 
                             {% if request.user == usr %}
-                                <a href="{% url 'update-profile' %}" class="btn btn-sm btn-outline-secondary">Edit Profile</a>
+                                <a href="{% url 'update-profile' %}" class="btn btn-sm btn-outline-gray">Edit Profile</a>
                             {% endif %}
                         </div>
                     </div>
@@ -37,25 +37,25 @@
                             {% endif %}
 
                             {% if usr.profile.website %}
-                                <h6 class="text-secondary"><span class="text-dark">Website:</span><a class="anchor" href="{{ usr.profile.website }}"> {{ usr.profile.website }}</a></h6>
+                                <h6 class="text-gray"><span class="text-dark">Website:</span><a class="anchor" href="{{ usr.profile.website }}"> {{ usr.profile.website }}</a></h6>
                             {% endif %}
 
                             {% if usr.profile.college %}
-                                <h6 class="text-secondary"><span class="text-dark">College/Institution:</span> {{ usr.profile.college }}</h6>
+                                <h6 class="text-gray"><span class="text-dark">College/Institution:</span> {{ usr.profile.college }}</h6>
                             {% endif %}
 
                             {% if usr.profile.branch %}
-                                <h6 class="text-secondary"><span class="text-dark">Branch:</span> {{ usr.profile.branch }}</h6>
+                                <h6 class="text-gray"><span class="text-dark">Branch:</span> {{ usr.profile.branch }}</h6>
                             {% endif %}
 
                             {% if usr.profile.semester %}
-                                <h6 class="text-secondary"><span class="text-dark">Semester:</span> {{ usr.profile.semester }}</h6>
+                                <h6 class="text-gray"><span class="text-dark">Semester:</span> {{ usr.profile.semester }}</h6>
                             {% endif %}
 
                             {% if usr.date_joined %}
-                                <h6 class="text-secondary"><span class="text-dark">Date Joined:</span> {{ usr.date_joined|date:"M d, Y" }}</h6>
+                                <h6 class="text-gray"><span class="text-dark">Date Joined:</span> {{ usr.date_joined|date:"M d, Y" }}</h6>
                             {% endif %}
-                            <!-- <h6 class="text-secondary"><span class="text-dark">Last active:</span> {{ usr.last_login }}</h6> -->
+                            <!-- <h6 class="text-gray"><span class="text-dark">Last active:</span> {{ usr.last_login }}</h6> -->
                         </div>
                     </div>
                 </div>
@@ -106,7 +106,7 @@
                         {% endfor %}
                     </div>
                     {% else %}
-                        <div class="text-center text-secondary">
+                        <div class="text-center text-gray">
                             <i>No requests</i>
                         </div>
                     {% endif %}

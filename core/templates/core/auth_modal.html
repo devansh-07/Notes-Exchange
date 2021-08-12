@@ -1,0 +1,54 @@
+{% load static %}
+
+<!-- Modal start -->
+<div class="modal fade" id="mainAuthModal" tabindex="-1" aria-labelledby="mainAuthModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body mx-3">
+                <!-- Tabs navs -->
+                <ul class="nav nav-tabs nav-justified mb-3" id="ex1" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link active" id="login-tab" data-mdb-toggle="tab" href="#login-tab-id" role="tab" aria-controls="login-tab-id" aria-selected="true">
+                            Login
+                        </a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="signup-tab" data-mdb-toggle="tab" href="#signup-tab-id" role="tab" aria-controls="signup-tab-id" aria-selected="false">
+                            Sign Up
+                        </a>
+                    </li>
+                </ul>
+                <!-- Tabs navs -->
+
+                <!-- Tabs content -->
+                <div class="tab-content" id="ex2-content">
+                    <div class="tab-pane fade show active" id="login-tab-id" role="tabpanel" aria-labelledby="login-tab">
+                        <div class="text-center my-5">
+                            <img class="border rounded-circle" src="{% static 'core/images/default-avatar.jpg' %}" alt="" height="120px" width="120px">
+                        </div>
+
+                        {% url 'account_login' as action_url %}
+                        {% include 'core/form_snippet.html' with form=loginform submit_name="Log In" action_url=action_url form_action_type="login" %}
+
+                        {% include 'core/social_account_signup.html' %}
+                    </div>
+                    <div class="tab-pane fade" id="signup-tab-id" role="tabpanel" aria-labelledby="signup-tab">
+                        <div class="text-center my-5">
+                            <img class="border rounded-circle" src="{% static 'core/images/default-avatar.jpg' %}" alt="" height="120px" width="120px">
+                        </div>
+                        {% url 'account_signup' as action_url %}
+                        {% include 'core/form_snippet.html' with form=signupform submit_name="Sign up" action_url=action_url form_action_type="signup" %}
+
+                        {% include 'core/social_account_signup.html' %}
+                    </div>
+                </div>
+                <!-- Tabs content -->
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal End -->

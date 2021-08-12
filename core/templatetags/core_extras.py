@@ -17,3 +17,11 @@ def exclude(l, curr_req):
 @register.filter(name='order')
 def order(l, arg):
     return l.order_by(arg)
+
+@register.filter(name="get_value_from_dict")
+def get_value_from_dict(d, key):
+    return d.get(key, "")
+
+@register.filter(name="strip")
+def strip(value, ch):
+    return value.strip(ch)

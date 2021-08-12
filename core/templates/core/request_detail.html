@@ -4,172 +4,219 @@
 
 {% block content %}
 
-<div class="content-section">
-    <div class="row">
-        <h2 class="col">{{ req.title }}</h2>
-        {% if request.user.is_authenticated and req.user == request.user and req.responses.all and not req.is_closed %}
-            <a class="my-auto mx-2 btn btn-sm btn-primary" style="float: right; vertical-align: center" href="{% url 'close-request' req_id=req.id %}">Mark as Completed</a>
-        {% endif %}
-        <a class="my-auto mx-2 btn btn-sm btn-outline-success" style="float: right; vertical-align: center" href="{% url 'new-upload' %}{% urlparams req=req.id semester=req.semester branch=req.branch next=request.path %}">Upload a response</a>
-    </div>
-
-    <div class="media mt-3">
-        {% if req.user.profile %}
-            <img class="mr-2 rounded-circle article-img" src="{{ req.user.profile.avatar.url }}" height="25px" width="25px">
-        {% else %}
-            <img class="mr-2 rounded-circle article-img" src="{% url 'media-server' filename='default-avatar.jpg' %}" height="25px" width="25px">
-        {% endif %}
-        <div class="article-metadata" style="">
-            <a class="anchor mr-2" href="{% url 'profile' username=req.user.username %}">{{ req.user }}</a>
-            <small class="text-muted">{{ req.date }}</small>
-        </div>
-    </div>
-
-    <hr class="my-2 mb-4 py-0">
-
-    <div class="row">
-        <div class="col">
-            <div class="">
-                <p>{{ req.description }}</p>
-            </div>
-
-            <div id="tag-section" class="my-2">
-                <small>
-                    {% if req.is_closed %}
-                    <a class="anchor tag px-2" style="color: green; background: #a2f2cf;" href="#">Completed</a>
-                    {% endif %}
-                    <a class="anchor tag px-2" href="{% url 'all-requests' %}{% urlparams branch=req.branch %}">{{ req.branch }}</a>
-                    <a class="anchor tag px-2" href="{% url 'all-requests' %}{% urlparams semester=req.semester %}">Semester: {{ req.semester }}</a>
-                </small>
-            </div>
-        </div>
-
-
-        {% if user.is_authenticated %}
-            <div class="col-auto border-left py-1">
-                <div class="" style="min-width: 50px;">
-                    {% if user in req.upvotes.all %}
+<div class="content-setion">
+    <!-- Request Area -->
+    <div class="content-section">
+        <div class="row">
+            <div class="col-auto p-0">
+                {% if user.is_authenticated %}
+                <div class="col-auto border-right py-1">
+                    <div class="" style="min-width: 50px;">
+                        {% if user in req.upvotes.all %}
                         <button id="reqUp" class="w-100 mb-1 btn btn-sm btn-success" onclick="CastVoteUtil(0, 1, {{ req.id }})" type="button" name="button">
                             <i class="fa fa-caret-up" aria-hidden="true"></i>
-                            {{ req.upvotes.all|length }}
+                            {{ req.upvotes.count }}
                         </button>
-                    {% else %}
+                        {% else %}
                         <button id="reqUp" class="w-100 mb-1 btn btn-sm btn-normal" onclick="CastVoteUtil(0, 1, {{ req.id }})" type="button" name="button">
                             <i class="fa fa-caret-up" aria-hidden="true"></i>
-                            {{ req.upvotes.all|length }}
+                            {{ req.upvotes.count }}
                         </button>
-                    {% endif %}
-                </div>
-                <div class="" style="min-width: 50px;">
-                    {% if user in req.downvotes.all %}
+                        {% endif %}
+                    </div>
+                    <div class="" style="min-width: 50px;">
+                        {% if user in req.downvotes.all %}
                         <button id="reqDown" class="w-100 btn btn-sm btn-danger" type="button" onclick="CastVoteUtil(0, -1, {{ req.id }})" name="button">
                             <i class="fa fa-caret-down" aria-hidden="true"></i>
-                            {{ req.downvotes.all|length }}
+                            {{ req.downvotes.count }}
                         </button>
-                    {% else %}
+                        {% else %}
                         <button id="reqDown" class="w-100 btn btn-sm btn-normal" type="button" onclick="CastVoteUtil(0, -1, {{ req.id }})" name="button">
                             <i class="fa fa-caret-down" aria-hidden="true"></i>
-                            {{ req.downvotes.all|length }}
+                            {{ req.downvotes.count }}
                         </button>
+                        {% endif %}
+                    </div>
+                </div>
+                {% else %}
+                <div class="col-auto border-right">
+                    <div class="p-0" style="min-width: 50px;">
+                        <label class="w-100 btn btn-sm border mb-1" type="" name="">
+                            <i class="fa fa-caret-up" aria-hidden="true"></i>
+                            {{ req.upvotes.count }}
+                        </label>
+                    </div>
+                    <div class="p-0" style="min-width: 50px;">
+                        <label class="w-100 btn btn-sm border my-0" type="" name="">
+                            <i class="fa fa-caret-down" aria-hidden="true"></i>
+                            {{ req.downvotes.count }}
+                        </label>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="col">
+                <h3 class="">{{ req.title }}</h3>
+                <div class="media mt-">
+                    {% if req.user.profile %}
+                        <img class="mr-2 rounded-circle article-img" src="{{ req.user.profile.avatar.url }}" height="25px" width="25px">
+                    {% else %}
+                        <img class="mr-2 rounded-circle article-img" src="{% url 'media-server' filename='default-avatar.jpg' %}" height="25px" width="25px">
                     {% endif %}
+
+                    <div class="article-metadata" style="">
+                        <a class="anchor mr-2" href="{% url 'profile' username=req.user.username %}">{{ req.user }}</a>
+                        <small class="text-muted">{{ req.date }}</small>
+                    </div>
                 </div>
             </div>
-        {% else %}
-            <div class="col-auto border-left">
-                <div class="p-0" style="min-width: 50px;">
-                    <label class="w-100 btn btn-sm border mb-1" type="" name="">
-                        <i class="fa fa-caret-up" aria-hidden="true"></i>
-                        {{ req.upvotes.all|length }}
-                    </label>
-                </div>
-                <div class="p-0" style="min-width: 50px;">
-                    <label class="w-100 btn btn-sm border my-0" type="" name="">
-                        <i class="fa fa-caret-down" aria-hidden="true"></i>
-                        {{ req.downvotes.all|length }}
-                    </label>
+
+            <div class="col-auto">
+                <div class="m-1">
+                    <a class="btn btn-sm btn-outline-success" style="float: right; vertical-align: center" href="{% url 'new-upload' %}{% urlparams req=req.id semester=req.semester branch=req.branch next=request.path %}">Upload a response</a>
                 </div>
             </div>
-        {% endif %}
+        </div>
+
+        <hr class="my-2 mb-4 py-0">
+
+        <div class="row">
+            <div class="col">
+                <div class="">
+                    <p>{{ req.description }}</p>
+                </div>
+
+                <div id="tag-section" class="my-2">
+                    <small>
+                        <small>
+                            {% if req.closing_response != None %}
+                                <a class="anchor tag px-2" style="color: green; background: #a2f2cf;" href="#">Completed</a>
+                            {% endif %}
+                            <a class="anchor tag px-2" href="{% url 'all-requests' %}{% urlparams branch=req.branch %}">{{ req.branch }}</a>
+                            <a class="anchor tag px-2" href="{% url 'all-requests' %}{% urlparams semester=req.semester %}">Semester: {{ req.semester }}</a>
+                        </small>
+                    </small>
+                </div>
+            </div>
+        </div>
 
     </div>
 
-    {% if req.responses.all %}
-        <hr class="my-3 mb-2 py-0">
-        <h4 class="my-3">Responses</h4>
+
+    {% if req.responses.count != 0 %}
+        {% if req.responses.count == 1 %}
+            <h4 class="my-4">1 Response</h4>
+        {% else %}
+            <h4 class="my-4">{{ req.responses.count }} Responses</h4>
+        {% endif %}
+
         {% for i in req.responses.all %}
 
-            <div class="content-section">
-                <div class="media">
-                    {% if i.user.profile %}
-                            <img class="mr-2 rounded-circle article-img" src="{{ i.user.profile.avatar.url }}" height="25px" width="25px">
-                    {% else %}
-                            <img class="mr-2 rounded-circle article-img" src="{% url 'media-server' filename='default-avatar.jpg' %}" height="25px" width="25px">
-                    {% endif %}
-                    <div class="article-metadata" style="">
-                        <a class=" anchor mr-2" href="{% url 'profile' username=i.user.username %}">{{ i.user }}</a>
-                        <small class="text-muted">{{ i.upload_date }}</small>
-                    </div>
+            {% if req.closing_response == i %}
+                <div class="text-light m-0" style="margin-top: -10px; font-size: 0.74rem;">
+                    <span class="small bg-success p-1 px-3">
+                        <strong>
+                            <i class="px-1 fa fa-check" aria-hidden="true"></i>
+                            Accepted
+                        </strong>
+                    </span>
                 </div>
-                <hr class="my-2 py-0">
+                <div class="content-section" style="border: 2px solid #10c96a; background-color: #f2fff7;">
+            {% else %}
+                <div class="content-section">
+            {% endif %}
 
                 <div class="row">
-                    <div class="col">
-
-                        <a class="anchor" href="{% url 'download' %}{% urlparams fileid=i.id%}">{{ i.filename }}</a>
-                        <small>
-                            <p class="my-0">{{ i.description }}</p>
-                        </small>
-                    </div>
-
-                    {% if user.is_authenticated %}
-                        <div class="col-auto border-left">
-                            <div class="row pl-1">
-                                <div class="col p-1" style="min-width: 50px;">
-                                    {% if user in i.upvotes.all %}
-                                        <button id="reqUp" class="w-100 mb-1 btn btn-sm btn-success" onclick="CastVoteUtil(1, 1, {{ i.id }})" type="button" name="button">
-                                            <i class="fa fa-caret-up" aria-hidden="true"></i>
-                                            {{ i.upvotes.all|length }}
-                                        </button>
-                                    {% else %}
-                                        <button id="reqUp" class="w-100 mb-1 btn btn-sm btn-normal" onclick="CastVoteUtil(1, 1, {{ i.id }})" type="button" name="button">
-                                            <i class="fa fa-caret-up" aria-hidden="true"></i>
-                                            {{ i.upvotes.all|length }}
-                                        </button>
-                                    {% endif %}
-                                </div>
-                                <div class="col p-1" style="min-width: 50px;">
-                                    {% if user in i.downvotes.all %}
-                                        <button id="reqDown" class="w-100 btn btn-sm btn-danger" type="button" onclick="CastVoteUtil(1, -1, {{ i.id }})" name="button">
-                                            <i class="fa fa-caret-down" aria-hidden="true"></i>
-                                            {{ i.downvotes.all|length }}
-                                        </button>
-                                    {% else %}
-                                        <button id="reqDown" class="w-100 btn btn-sm btn-normal" type="button" onclick="CastVoteUtil(1, -1, {{ i.id }})" name="button">
-                                            <i class="fa fa-caret-down" aria-hidden="true"></i>
-                                            {{ i.downvotes.all|length }}
-                                        </button>
-                                    {% endif %}
+                    <div class="col-auto p-0">
+                        {% if user.is_authenticated %}
+                            <div class="col-auto border-right">
+                                <div class="">
+                                    <div class="" style="min-width: 50px;">
+                                        {% if user in i.upvotes.all %}
+                                            <button id="reqUp" class="w-100 mb-1 btn btn-sm btn-success" onclick="CastVoteUtil(1, 1, {{ i.id }})" type="button" name="button">
+                                                <i class="fa fa-caret-up" aria-hidden="true"></i>
+                                                {{ i.upvotes.count }}
+                                            </button>
+                                        {% else %}
+                                            <button id="reqUp" class="w-100 mb-1 btn btn-sm btn-normal" onclick="CastVoteUtil(1, 1, {{ i.id }})" type="button" name="button">
+                                                <i class="fa fa-caret-up" aria-hidden="true"></i>
+                                                {{ i.upvotes.count }}
+                                            </button>
+                                        {% endif %}
+                                    </div>
+                                    <div class="" style="min-width: 50px;">
+                                        {% if user in i.downvotes.all %}
+                                            <button id="reqDown" class="w-100 btn btn-sm btn-danger" type="button" onclick="CastVoteUtil(1, -1, {{ i.id }})" name="button">
+                                                <i class="fa fa-caret-down" aria-hidden="true"></i>
+                                                {{ i.downvotes.count }}
+                                            </button>
+                                        {% else %}
+                                            <button id="reqDown" class="w-100 btn btn-sm btn-normal" type="button" onclick="CastVoteUtil(1, -1, {{ i.id }})" name="button">
+                                                <i class="fa fa-caret-down" aria-hidden="true"></i>
+                                                {{ i.downvotes.count }}
+                                            </button>
+                                        {% endif %}
+                                    </div>
                                 </div>
                             </div>
+                        {% else %}
+                            <div class="col-auto border-left">
+                                <div class="row pl-1">
+                                    <div class="col p-1" style="min-width: 50px;">
+                                        <label class="w-100 btn btn-sm border mb-1" type="" name="">
+                                            <i class="fa fa-caret-up" aria-hidden="true"></i>
+                                            {{ i.upvotes.count }}
+                                        </label>
+                                    </div>
+                                    <div class="col p-1" style="min-width: 50px;">
+                                        <label class="w-100 btn btn-sm border my-0" type="" name="">
+                                            <i class="fa fa-caret-down" aria-hidden="true"></i>
+                                            {{ i.downvotes.count }}
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="col">
+                        <div class="media">
+                                {% if i.user.profile %}
+                                    <img class="mr-2 rounded-circle article-img" src="{{ i.user.profile.avatar.url }}" height="25px" width="25px">
+                                {% else %}
+                                    <img class="mr-2 rounded-circle article-img" src="{% url 'media-server' filename='default-avatar.jpg' %}" height="25px" width="25px">
+                                {% endif %}
+
+                            <small>
+                                <div class="article-metadata" style="">
+                                    <a class=" anchor mr-2" href="{% url 'profile' username=i.user.username %}">{{ i.user }}</a>
+                                    <small class="text-muted">{{ i.upload_date }}</small>
+                                </div>
+                            </small>
                         </div>
-                    {% else %}
+                        <hr class="my-1 py-0">
+
+                        <div class="row">
+                            <div class="col">
+                                <a class="anchor" href="{% url 'download' %}{% urlparams fileid=i.id%}">{{ i.filename }}</a>
+                                <small>
+                                    <p class="my-0">{{ i.description }}</p>
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if request.user.is_authenticated and req.user == request.user and req.responses.count != 0 and req.closing_response == None %}
                         <div class="col-auto border-left">
-                            <div class="row pl-1">
-                                <div class="col p-1" style="min-width: 50px;">
-                                    <label class="w-100 btn btn-sm border mb-1" type="" name="">
-                                        <i class="fa fa-caret-up" aria-hidden="true"></i>
-                                        {{ i.upvotes.all|length }}
-                                    </label>
-                                </div>
-                                <div class="col p-1" style="min-width: 50px;">
-                                    <label class="w-100 btn btn-sm border my-0" type="" name="">
-                                        <i class="fa fa-caret-down" aria-hidden="true"></i>
-                                        {{ i.downvotes.all|length }}
-                                    </label>
-                                </div>
+                            <div class="m-1">
+                                <a class="my-auto text-gray" style="font-size: 2rem;" href="{% url 'close-request' req_id=req.id file_id=i.id %}">
+                                    <i class="fa fa-check" aria-hidden="true"></i>
+                                </a>
                             </div>
                         </div>
                     {% endif %}
+
                 </div>
             </div>
         {% endfor %}
@@ -222,7 +269,7 @@
 
                                 <div id="tag-section" class="my-0">
                                     <small>
-                                        {% if r.is_closed %}
+                                        {% if r.closing_response != None %}
                                             <a class="anchor tag px-2" style="color: green; background: #a2f2cf;">Completed</a>
                                         {% endif %}
                                         <a class="anchor tag px-2" href="{% url 'all-requests' %}{% urlparams branch=r.branch %}">{{ r.branch }}</a>

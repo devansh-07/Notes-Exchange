@@ -10,8 +10,15 @@ import os
 from .filters import RequestFilter, FileFilter
 from accounts.decorators import profile_required
 from allauth.account.decorators import verified_email_required
+from accounts.forms import CustomSignupForm
+from allauth.account.forms import LoginForm
+
+from .api_views import *
 
 # Create your views here.
+
+def mtest(request):
+    return render(request, "index.html")
 
 @csrf_exempt
 @require_http_methods(["GET"])
@@ -32,27 +39,45 @@ def profile_pic_server(request, filename):
     return FileResponse(open(os.path.join(os.getcwd(), 'Media/profile_pics/', filename), 'rb'))
 
 def home(request):
-    reqs = Request.objects.filter().order_by('-date')
-    all_files = File.objects.all().order_by('-upload_date')
-    return render(request, "core/home.html", {"user": request.user, "reqs": reqs, "files": all_files, "title": "Home"})
+    if request.method == "GET":
+        signupform = CustomSignupForm()
+        loginform = LoginForm()
 
+        reqs = Request.objects.filter().order_by('-date')
+        all_files = File.objects.all().order_by('-upload_date')
+
+        return render(request, "core/home.html", {"user": request.user, "reqs": reqs, "files": all_files, "title": "Home", 'loginform': loginform,'signupform': signupform})
+
+    return render(request, "core/home.html")
+
+# API created
 def all_requests(request):
+    signupform = CustomSignupForm()
+    loginform = LoginForm()
+
     reqs = Request.objects.all()
 
     myfilter = RequestFilter(request.GET, queryset=reqs)
     new_reqs = myfilter.qs
-    return render(request, "core/all_requests.html", {"reqs": new_reqs.order_by('-date'), 'myfilter': myfilter, "title": "All Requests"})
+    return render(request, "core/all_requests.html", {"reqs": new_reqs.order_by('-date'), 'myfilter': myfilter, "title": "All Requests", 'loginform': loginform,'signupform': signupform})
 
+# API created
 def all_files(request):
+    signupform = CustomSignupForm()
+    loginform = LoginForm()
+
     all_files = File.objects.all()
 
     myfilter = FileFilter(request.GET, queryset=all_files)
     all_files = myfilter.qs
-    return render(request, "core/all_files.html", {"files": all_files.order_by('-upload_date'), 'myfilter': myfilter, "title": "All Files"})
+    return render(request, "core/all_files.html", {"files": all_files.order_by('-upload_date'), 'myfilter': myfilter, "title": "All Files", 'loginform': loginform,'signupform': signupform})
 
 def about(request):
-    return render(request, "core/about.html", {"title": "About Us"})
+    signupform = CustomSignupForm()
+    loginform = LoginForm()
+    return render(request, "core/about.html", {"title": "About Us", 'loginform': loginform,'signupform': signupform})
 
+# API created
 @login_required
 @verified_email_required
 @profile_required(redirect_url="update-profile")
@@ -68,17 +93,24 @@ def new_request(request):
     return render(request, "core/new_request.html", {"form": form, "title": "Create new request"})
 
 @login_required
-def close_request(request, req_id):
+def close_request(request, req_id, file_id):
     req = Request.objects.filter(id=req_id).first()
     if not req:
         messages.warning(request, f"Invalid request ID!")
         return redirect('home')
+
+    file = File.objects.filter(id=file_id).first()
+    if not file:
+        messages.warning(request, f"Invalid File ID!")
+        return redirect('home')
+
     if req.user != request.user:
         messages.warning(request, f"Access denied.")
         return redirect('request-details', req_id=req.id)
     else:
-        req.is_closed = True
+        req.closing_response = file
         req.save()
+
     return redirect('request-details', req_id=req.id)
 
 @login_required
@@ -97,11 +129,14 @@ def new_upload(request):
     return render(request, "core/upload.html", {"form": form, "next": request.GET.get('next', 'all-uploads'), "title": "Upload a Response"})
 
 def request_details(request, req_id):
+    signupform = CustomSignupForm()
+    loginform = LoginForm()
+
     req = Request.objects.filter(id=req_id).first()
     if not req:
         messages.warning(request, f"Invalid request ID!")
         return redirect('home')
-    return render(request, "core/request_detail.html", {"req": req, "title": req.title})
+    return render(request, "core/request_detail.html", {"req": req, "title": req.title, 'loginform': loginform,'signupform': signupform})
 
 @csrf_exempt
 @login_required

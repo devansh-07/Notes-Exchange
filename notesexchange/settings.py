@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY', "noSecretKey")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', ".herokuapp.com"]
 
@@ -39,6 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+
+    'rest_framework',
+    'rest_framework.authtoken',
 
     # Added
     'accounts.apps.AccountsConfig',
@@ -67,7 +70,7 @@ ROOT_URLCONF = 'notesexchange.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates'), os.path.join(BASE_DIR, 'templates', 'allauth')],
+        'DIRS': [os.path.join(BASE_DIR, 'templates'), os.path.join(BASE_DIR, 'frontend/build'), os.path.join(BASE_DIR, 'templates', 'allauth')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -103,7 +106,7 @@ DATABASES = {
 
 # EDIT
 # FOR HEROKU DEPLOYMENT ONLY
-DATABASES['default'] = dj_database_url.config(env="HEROKU_POSTGRESQL_AQUA_URL", conn_max_age=600, ssl_require=True)
+# DATABASES['default'] = dj_database_url.config(env="HEROKU_POSTGRESQL_AQUA_URL", conn_max_age=600, ssl_require=True)
 
 SITE_ID = 1
 
@@ -144,6 +147,9 @@ USE_TZ = True
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'frontend/build/static'),
+]
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "Media")
 MEDIA_URL = "/media/"
@@ -164,10 +170,18 @@ ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 
 ACCOUNT_EMAIL_SUBJECT_PREFIX = "[Notes Exchange] "
 
+ACCOUNT_SESSION_REMEMBER = True
+
 # APPEND_SLASH = False
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 ACCOUNT_FORMS = {'signup': 'accounts.forms.CustomSignupForm'}
 
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication'
+    ]
+}

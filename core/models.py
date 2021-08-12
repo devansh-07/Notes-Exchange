@@ -9,12 +9,11 @@ from . import choices
 class Request(models.Model):
     title = models.CharField(max_length=150)
     description = models.CharField(max_length=400)
-    # college = models.CharField(max_length=100)
     branch = models.CharField(max_length=50, choices=choices.branches)
     semester = models.IntegerField(choices=choices.semesters)
     date = models.DateTimeField(default=timezone.now)
-    is_closed = models.BooleanField(default=False)
 
+    closing_response = models.ForeignKey('File', blank=True, null=True, on_delete=models.SET_NULL, related_name="answer")
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     upvotes = models.ManyToManyField(User, blank=True, related_name="req_upvotes")
@@ -24,7 +23,7 @@ class Request(models.Model):
         return self.title
 
 class File(models.Model):
-    doc = models.FileField(upload_to='Files/', default="0")
+    doc = models.FileField(upload_to='Files/')
     # college = models.CharField(max_length=100)
     description = models.CharField(max_length=400)
     branch = models.CharField(max_length=50, choices=choices.branches)

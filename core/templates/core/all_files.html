@@ -30,12 +30,11 @@
 
 {% for file in files %}
     <article class="content-section my-3">
-
         <div class="media">
             {% if file.user.profile %}
-                    <img class="mr-2 rounded-circle article-img" src="{{ file.user.profile.avatar.url }}" height="25px" width="25px">
+                <img class="mr-2 rounded-circle article-img" src="{{ file.user.profile.avatar.url }}" height="25px" width="25px">
             {% else %}
-                    <img class="mr-2 rounded-circle article-img" src="{% url 'media-server' filename='default-avatar.jpg' %}" height="25px" width="25px">
+                <img class="mr-2 rounded-circle article-img" src="{% url 'media-server' filename='default-avatar.jpg' %}" height="25px" width="25px">
             {% endif %}
             <div class="article-metadata" style="">
                 <a class="anchor mr-2" href="{% url 'profile' username=file.user.username %}">{{ file.user }}</a>
@@ -102,9 +101,9 @@
                     </div>
                 {% endif %}
             </div>
-
         </div>
     </article>
+
 {% endfor %}
 
 {% endblock content %}

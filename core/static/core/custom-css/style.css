@@ -1,0 +1,173 @@
+body {
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.layer {
+    height: 100vh;
+    width: 100%;
+    z-index: -100;
+    opacity: 0;
+    background-color: black;
+    position: fixed;
+}
+
+.cursor-pointer{
+  cursor: pointer;
+}
+
+a:hover {
+  color: #428bca;
+  text-decoration: none;
+}
+
+.anchor:link {
+    text-decoration: none;
+}
+
+.text-dark-gray {
+    color: #484848;
+}
+
+.text-gray {
+    color: #999999;
+}
+
+ul.no-bullets {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+#sideMenu {
+    width: 400px;
+    max-width: 400px;
+    background-color: #f9f9f9;
+    height: 100%;
+    position: fixed;
+    transform: translateX(400px);
+    z-index: 100;
+    padding-top: 10px;
+    top: 0;
+    right: 0px;
+    overflow-x: hidden;
+    transition: .2s;
+}
+
+#optionsList li {
+    font-size: 0.9rem;
+}
+
+#optionsList li a{
+    text-decoration: none;
+    color: #4f4f4f;
+    margin: 0;
+    padding: 9px;
+    display: block;
+    background-color: transparent;
+    border-radius: 3px;
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid #e0e0e0;
+    transition: 0.2s linear;
+    cursor: pointer;
+}
+
+#optionsList li:last-child a {
+    /* border: none; */
+    border-bottom: 1px solid transparent;
+}
+
+#optionsList li a:hover{
+    text-decoration: none;
+    color: white;
+    margin: 0;
+    padding: 9px;
+    display: block;
+    border-bottom: 1px solid transparent;
+    background-color: #1262f1;
+    box-shadow: 0 2px 5px 0 rgb(0, 0, 0, 30%);
+    cursor: pointer;
+}
+
+#optionsList li a span{
+    display: none;
+    transition: 0.2s linear;
+}
+
+#optionsList li a:hover > span{
+    display: inline-block;
+    transition: 0.2s linear;
+}
+
+#ProfileMenuList {
+    font-size: 0.95rem;
+}
+
+#ProfileMenuList a {
+    text-decoration: none;
+    color: #4f4f4f;
+    margin: 0;
+    padding: 12px;
+    display: block;
+    background-color: transparent;
+    border-radius: 3px;
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid #e0e0e0;
+    transition: 0.2s linear;
+    cursor: pointer;
+}
+
+#ProfileMenuList li:last-child a {
+    border-bottom: 1px solid transparent;
+}
+
+#ProfileMenuList li a:hover{
+    color: black;
+    background-color: #f6f6f6;
+    box-shadow: 0 2px 5px 0 rgb(0, 0, 0, 30%);
+    cursor: pointer;
+}
+
+#ProfileMenuList li a span{
+    display: none;
+}
+
+#ProfileMenuList .option-active span{
+    display: inline-block;
+}
+
+#ProfileMenuList .option-active a{
+    color: white;
+    background-color: #1262f1;
+}
+
+#ProfileMenuList .option-active a:hover{
+    color: white;
+    background-color: #1262f1;
+}
+
+.mini-button {
+    height: 35px;
+    width: 35px;
+    border-radius: 50%;
+    font-size: 14px;
+    outline: 0;
+    border: 0;
+    background-color: transparent;
+}
+
+.mini-button:hover {
+    background-color: #e0e0e0;
+}
+
+.drop-down-menu {
+    left: -170px!important;
+    top: 50px!important;
+    width: 230px;
+}
+
+.drop-down-menu li a{
+    padding-top: 9px;
+    padding-bottom: 9px;
+}

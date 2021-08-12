@@ -54,8 +54,8 @@
                 </div>
 
                 <small>
-                    {% if req.is_closed %}
-                    <a class="anchor tag px-2" style="color: green; background: #a2f2cf;">Completed</a>
+                    {% if req.closing_response != None %}
+                        <a class="anchor tag px-2" style="color: green; background: #a2f2cf;">Completed</a>
                     {% endif %}
                     <a class="anchor tag px-2" href="{% url 'all-requests' %}{% urlparams branch=req.branch %}">{{ req.branch }}</a>
                     <a class="anchor tag px-2" href="{% url 'all-requests' %}{% urlparams semester=req.semester %}">Semester: {{ req.semester }}</a>

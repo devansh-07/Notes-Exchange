@@ -10,6 +10,7 @@ function CastVoteUtil(flag, val, id) {
 
 	xhr.onload = function(){
 		if (this.status == 201) {
+            console.log(this.response);
             if (flag == '0') {
                 var el = document.querySelector("#req-" + id);
                 if (val == '1') {
