@@ -48,7 +48,7 @@
             <div class="row">
                 <div class="col">
                     <div class="">
-                        <h4><a class="article-title" href="{% url 'download' %}{% urlparams fileid=file.id %}">{{ file.filename }}</a></h4>
+                        <h4><a class="article-title" href="{% url 'download' filename=file.filename %}">{{ file.filename }}</a></h4>
                         <h6 class="article-content">{{ file.description }}</h6>
                     </div>
 

@@ -19,7 +19,6 @@ class Profile(models.Model):
     branch = models.CharField(max_length=50, choices=BLANK_CHOICE_DASH+choices.branches)
     semester = models.IntegerField( choices=BLANK_CHOICE_DASH+choices.semesters)
     college = models.CharField(max_length=100)
-    # rollno = models.CharField(max_length=15)
 
     def __str__(self):
         return self.user.username

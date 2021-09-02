@@ -13,27 +13,25 @@ from allauth.account.decorators import verified_email_required
 from accounts.forms import CustomSignupForm
 from allauth.account.forms import LoginForm
 
-from .api_views import *
-
 # Create your views here.
 
+global file_upload_path
+file_upload_path = "files/"
+
 def mtest(request):
+    f = File.objects.filter(request=2)
+    print(f.first(), f.all())
     return render(request, "index.html")
 
-@csrf_exempt
 @require_http_methods(["GET"])
-def download(request):
-    fileid = request.GET.get('fileid', None)
-    if not fileid:
-        return redirect('home')
-
-    file_obj = File.objects.filter(id=fileid).first()
+def download(request, filename):
+    file_obj = File.objects.filter(doc=file_upload_path+filename).first()
 
     if not file_obj:
-        messages.warning(request, "Invalid File ID.")
+        messages.warning(request, "Invalid File name.")
         return redirect('home')
 
-    return FileResponse(open(os.path.join(os.getcwd(), 'Media/Files/', file_obj.filename), 'rb'))
+    return FileResponse(open(os.path.join(os.getcwd(), 'Media/files/', file_obj.filename), 'rb'))
 
 def profile_pic_server(request, filename):
     return FileResponse(open(os.path.join(os.getcwd(), 'Media/profile_pics/', filename), 'rb'))

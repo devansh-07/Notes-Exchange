@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     # Added
     'accounts.apps.AccountsConfig',
     'core.apps.CoreConfig',
+    'api',
     'crispy_forms',
 
     # Auth

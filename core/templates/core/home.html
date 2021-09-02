@@ -175,7 +175,7 @@
 
                         <div class="col py-1">
                             <div class="">
-                                <h5><a class="article-title" href="{% url 'download' %}{% urlparams fileid=file.id%}">{{ file.filename }}</a></h5>
+                                <h5><a class="article-title" href="{% url 'download' filename=file.filename %}">{{ file.filename }}</a></h5>
                                 <!-- <h6 class="article-content">{{ file.description }}</h6> -->
                             </div>
 

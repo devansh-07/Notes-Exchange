@@ -17,7 +17,8 @@ def profile(request, username):
     user = User.objects.filter(username=username).first()
     if user:
         reqs = Request.objects.filter(user=user).order_by('-date')
-        return render(request, "accounts/profile.html", {"usr": user, "reqs": reqs, "title": user.username})
+        uploads = File.objects.filter(user=user).order_by('-upload_date')
+        return render(request, "accounts/profile.html", {"usr": user, "reqs": reqs, "uploads": uploads, "title": user.username})
 
     messages.warning(request, f"Username {username} doesn't exist!")
     return redirect('home')
